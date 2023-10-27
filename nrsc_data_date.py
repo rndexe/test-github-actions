@@ -23,8 +23,8 @@ requests.adapters.DEFAULT_RETRIES = 5 # increase retries number
 
 for SENSOR in SENSORS:
 
-    r = requests.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023")
-
+    r = requests.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023",timeout=(5,5))
+    
     url = re.search(r'(?<=src=").*?(?=[\*"])',r.text)
     filename = re.search(r'[^\/]+(?=\.[^\/.]*$)',url[0])
     zipfile_name = f"shapefile_{SENSOR}.zip"
