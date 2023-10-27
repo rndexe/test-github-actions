@@ -32,8 +32,8 @@ jobs:
         with:
           environment-file: spec-file.txt
           activate-environment: env
-          python-version: 3.9
+          python-version: 3.9.18
           auto-activate-base: false
-      - run: |
-          conda info
+      - name: Run script
+        run: |
           python nrsc_data_date.py
