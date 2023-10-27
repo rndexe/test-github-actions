@@ -30,7 +30,7 @@ jobs:
       - name: Setup conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          environment-file: environment.yml
+          environment-file: spec-file.txt
           activate-environment: env
           python-version: 3.9
           auto-activate-base: false
