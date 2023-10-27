@@ -30,7 +30,7 @@ for SENSOR in SENSORS:
     zipfile_name = f"shapefile_{SENSOR}.zip"
 
     print(f'Downloading {SENSOR} shapefile...')
-    s = get(url[0],timeout=[5,5])
+    s = requests.get(url[0],timeout=[5,5])
     with open(zipfile_name, 'wb') as fd:
         for chunk in s.iter_content(chunk_size=128):
             fd.write(chunk)
