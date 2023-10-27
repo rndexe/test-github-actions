@@ -11,9 +11,8 @@ from shapely.geometry import Point
 # Shape files from  https://onlinemaps.surveyofindia.gov.in/Digital_Product_Show.aspx
 # Restrict to punjab only for optimization
 
-path = "indian-district-boundaries/"
 districts_file_name = "PUNJAB_DISTRICT_BDY.json"
-districts_gdf = gpd.read_file(os.path.join(path, districts_file_name))
+districts_gdf = gpd.read_file(districts_file_name)
 
 DATE = datetime.today().strftime('%Y-%m-%d')
 #DATE = "2023-10-24" 
