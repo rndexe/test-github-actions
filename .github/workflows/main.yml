@@ -32,7 +32,6 @@ jobs:
         with:
           environment-file: spec-file.txt
           activate-environment: env
-          python-version: 3.9.18
           auto-activate-base: false
       - name: Run script
         run: |
