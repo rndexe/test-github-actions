@@ -18,11 +18,12 @@ DATE = datetime.today().strftime('%Y-%m-%d')
 #DATE = "2023-10-24" 
 SENSORS = ["modis","vf375"]
 
+s = requests.Session()
 fires_gdf_array = []
 
 for SENSOR in SENSORS:
 
-    r = requests.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023",timeout=(10,15))
+    r = s.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023",timeout=(10,15))
     
     print(r.request.headers)
     url = re.search(r'(?<=src=").*?(?=[\*"])',r.text)
@@ -30,10 +31,10 @@ for SENSOR in SENSORS:
     zipfile_name = f"shapefile_{SENSOR}.zip"
 
     print(f'Downloading {SENSOR} shapefile...')
-    s = requests.get(url[0],timeout=(10,15))
-    print(s.request.headers)
+    rshp = s.get(url[0],timeout=(10,15))
+    print(rshp.request.headers)
     with open(zipfile_name, 'wb') as fd:
-        for chunk in s.iter_content(chunk_size=128):
+        for chunk in rshp.iter_content(chunk_size=128):
             fd.write(chunk)
     print("Done")
 
