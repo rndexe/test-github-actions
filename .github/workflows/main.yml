@@ -1,0 +1,23 @@
+name: get NRSC data
+
+on:
+  schedule:
+    - cron: '30 0,10-13,18 * * *' #Runs at 30 minutes past the hour, at 00:00, 10:00 through 13:00, and 18:59 UTC
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+
+jobs:
+  update-json-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 19
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: Setup conda
+        uses: s-weigand/setup-conda@v1
+      - run: conda --version
+      - run: which python
