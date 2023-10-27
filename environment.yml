@@ -1,6 +1,0 @@
-name: env
-channels:
-  - defaults
-dependencies:
-  - geopandas
-
