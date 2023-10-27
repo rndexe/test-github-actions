@@ -5,6 +5,7 @@ import zipfile
 import geopandas as gpd
 import pandas as pd
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from shapely.geometry import Point
 
@@ -14,9 +15,9 @@ from shapely.geometry import Point
 districts_file_name = "PUNJAB_DISTRICT_BDY.json"
 districts_gdf = gpd.read_file(districts_file_name)
 
-DATE = datetime.today().strftime('%Y-%m-%d')
+DATE = datetime.now(tz=ZoneInfo("Asia/Kolkata")).strftime('%Y-%m-%d')
 
-x = datetime.now()
+x = datetime.now(tz=ZoneInfo("Asia/Kolkata"))
 print(x)
 #DATE = "2023-10-24" 
 SENSORS = ["modis","vf375"]
@@ -28,14 +29,12 @@ for SENSOR in SENSORS:
 
     r = s.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023",timeout=(10,15))
     
-    print(r.request.headers)
     url = re.search(r'(?<=src=").*?(?=[\*"])',r.text)
     filename = re.search(r'[^\/]+(?=\.[^\/.]*$)',url[0])
     zipfile_name = f"shapefile_{SENSOR}.zip"
 
     print(f'Downloading {SENSOR} shapefile...')
     rshp = s.get(url[0],timeout=(10,15))
-    print(rshp.request.headers)
     with open(zipfile_name, 'wb') as fd:
         for chunk in rshp.iter_content(chunk_size=128):
             fd.write(chunk)
