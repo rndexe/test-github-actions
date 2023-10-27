@@ -4,18 +4,6 @@ on:
   schedule:
     - cron: '30 0,10-13,18 * * *' #Runs at 30 minutes past the hour, at 00:00, 10:00 through 13:00, and 18:59 UTC
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        default: 'warning'
-        type: choice
-        options:
-          - info
-          - warning
-          - debug
-      print_tags:
-        description: 'True to print to STDOUT'
-        type: boolean
 
 jobs:
   get-nrsc-data:
