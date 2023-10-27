@@ -19,18 +19,17 @@ DATE = datetime.today().strftime('%Y-%m-%d')
 SENSORS = ["modis","vf375"]
 
 fires_gdf_array = []
-requests.adapters.DEFAULT_RETRIES = 5 # increase retries number
 
 for SENSOR in SENSORS:
 
-    r = requests.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023",timeout=(5,5))
+    r = requests.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023",timeout=(10,15))
     
     url = re.search(r'(?<=src=").*?(?=[\*"])',r.text)
     filename = re.search(r'[^\/]+(?=\.[^\/.]*$)',url[0])
     zipfile_name = f"shapefile_{SENSOR}.zip"
 
     print(f'Downloading {SENSOR} shapefile...')
-    s = requests.get(url[0],timeout=(5,5))
+    s = requests.get(url[0],timeout=(10,15))
     with open(zipfile_name, 'wb') as fd:
         for chunk in s.iter_content(chunk_size=128):
             fd.write(chunk)
