@@ -16,7 +16,7 @@ districts_gdf = gpd.read_file(districts_file_name)
 
 DATE = datetime.today().strftime('%Y-%m-%d')
 
-x = datetime.datetime.now()
+x = datetime.now()
 print(x)
 #DATE = "2023-10-24" 
 SENSORS = ["modis","vf375"]
