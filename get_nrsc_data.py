@@ -72,11 +72,11 @@ fires_gdf = fires_gdf[fires_gdf.district.notna()]
 print(fires_gdf)
 print("Writing to json")
 
-fires_gdf.to_json(f'{DATE}.json', orient="records")
+fires_gdf.to_json(f'docs/{DATE}.json', orient="records")
 
 print("Updating data summary")
 
-with open('total_numbers.json') as f:
+with open('docs/total_numbers.json') as f:
     d = json.load(f)
 
 total = len(fires_gdf)
@@ -94,5 +94,5 @@ if (not updated):
 d["last_update"] = datetime.now().strftime('%-I:%M %p, %d %b %Y')
 json_object = json.dumps(d, indent=4)
 
-with open("total_numbers.json", "w") as outfile:
+with open("docs/total_numbers.json", "w") as outfile:
     outfile.write(json_object)
