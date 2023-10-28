@@ -24,3 +24,6 @@ jobs:
       - name: Run script
         run: |
           python nrsc_data_date.py
+      - name: Push data to gh-pages branch
+        run: |
+          git status
