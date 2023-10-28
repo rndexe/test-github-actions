@@ -26,4 +26,6 @@ jobs:
           python nrsc_data_date.py
       - name: Push data to gh-pages branch
         run: |
+          git add *.json
+          git commit -m "Data update"
           git status
