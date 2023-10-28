@@ -23,9 +23,10 @@ jobs:
           auto-activate-base: false
       - name: Run script
         run: |
-          python nrsc_data_date.py
-      - name: Push data to gh-pages branch
+          python get_nrsc_data.py
+      - name: Push new data
         run: |
-          git add *.json
-          git commit -m "Data update"
+          git add docs/*
+          git commit -m "Data update : $(date)"
           git status
+          git push
