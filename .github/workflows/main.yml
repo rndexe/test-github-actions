@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '35 */1 * * *' #Runs at 35 minutes past the hour.
   workflow_dispatch:
+  
+permissions:
+  contents: write
 
 jobs:
   get-nrsc-data:
