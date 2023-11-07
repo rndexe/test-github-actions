@@ -1,14 +1,21 @@
 import requests
+import argparse
 import json
 import os
 import re
 import zipfile
 import geopandas as gpd
 import pandas as pd
+from pprint import pprint
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from shapely.geometry import Point
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-d","--date")
+args = parser.parse_args()
 
 # Shape files from  https://onlinemaps.surveyofindia.gov.in/Digital_Product_Show.aspx
 # Restrict to punjab only for optimization
@@ -16,7 +23,12 @@ from shapely.geometry import Point
 districts_file_name = "PUNJAB_DISTRICT_BDY.json"
 districts_gdf = gpd.read_file(districts_file_name)
 
-DATE = datetime.now(tz=ZoneInfo("Asia/Kolkata")).strftime('%Y-%m-%d')
+DATE = ""
+if (args.date):
+    DATE = args.date
+else:
+    DATE = datetime.now(tz=ZoneInfo("Asia/Kolkata")).strftime('%Y-%m-%d')
+#DATE = "2023-11-05"
 SENSORS = ["modis","vf375"]
 API_VERSION = "v2"
 STATE = "PB"
@@ -29,14 +41,14 @@ fires_gdf_array = []
 for SENSOR in SENSORS:
 
     print(f'Connecting to {SENSOR} API...')
-    
-    r = s.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023",timeout=(10,15))    
+
+    r = s.get(f"https://bhuvan-app1.nrsc.gov.in/2dresources/fire_shape/create_shapefile_v2.php?date={DATE}&s={SENSOR}&y1=2023",timeout=(10,15))
     url = re.search(r'(?<=src=").*?(?=[\*"])',r.text)
     filename = re.search(r'[^\/]+(?=\.[^\/.]*$)',url[0])
     zipfile_name = f"shapefile_{SENSOR}.zip"
 
     print(f'Downloading {SENSOR} shapefile...')
-    
+
     rshp = s.get(url[0],timeout=(10,15))
     with open(zipfile_name, 'wb') as fd:
         for chunk in rshp.iter_content(chunk_size=128):
@@ -72,19 +84,41 @@ fires_gdf.drop(inplace=True,columns=['brightness','cropmask','geometry','scanpix
 fires_gdf = fires_gdf[fires_gdf.district.notna()]
 
 print(fires_gdf)
-print("Writing to json")
 
 todays_data = {}
 todays_data["last_update"] = datetime.now(tz=ZoneInfo("Asia/Kolkata")).strftime('%-I:%M %p, %d %b %Y')
+todays_data[STATE] = {}
+todays_data[STATE]["total"] = len(fires_gdf)
+
 
 value_counts = fires_gdf['district'].value_counts().to_dict()
 # Select the column values from df1
 column_values = districts_gdf['District'].unique()
-result_json = {}
-for value in column_values:
-    result_json[str(value)] = value_counts.get(value, 0)
 
-todays_data[STATE] = json.loads(fires_gdf.to_json(orient="records"))
-todays_data["districts"] = result_json
+with open(f'docs/{API_VERSION}/historical_data.json') as f:
+    d = json.load(f)
+result_json = {}
+
+for value in column_values:
+    district_count = value_counts.get(value, 0)
+    result_json[str(value)] = district_count
+    d[STATE]["districts"][value][DATE] = district_count
+
+pprint(result_json)
+todays_data[STATE]["locations"] = json.loads(fires_gdf.to_json(orient="records"))
+todays_data[STATE]["districts"] = result_json
+
+print(f"Writing to {DATE}.json")
 with open(f'docs/{API_VERSION}/{DATE}.json', 'w') as outfile:
     json.dump(todays_data, outfile)
+
+
+d[STATE]["total"][DATE]=len(fires_gdf)
+json_object = json.dumps(d)
+
+
+print(f"Writing to historical_data.json")
+#d[STATE]["districts"][]
+with open(f'docs/{API_VERSION}/historical_data.json', 'w') as outfile:
+    outfile.write(json_object)
+
