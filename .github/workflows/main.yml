@@ -2,7 +2,7 @@ name: get NRSC data
 
 on:
   schedule:
-    - cron: '35 */1 * * *' #Runs at 35 minutes past the hour.
+    - cron: '35 0-23 * * *' #Runs at 35 minutes past the hour.
   workflow_dispatch:
   
 permissions:
