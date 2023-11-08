@@ -102,7 +102,7 @@ result_json = {}
 for value in column_values:
     district_count = value_counts.get(value, 0)
     result_json[str(value)] = district_count
-    d[STATE]["districts"][value][DATE] = district_count
+    d[STATE]["districts"][value]["dates"][DATE] = district_count
 
 pprint(result_json)
 todays_data[STATE]["locations"] = json.loads(fires_gdf.to_json(orient="records"))
@@ -113,7 +113,7 @@ with open(f'docs/{API_VERSION}/{DATE}.json', 'w') as outfile:
     json.dump(todays_data, outfile)
 
 
-d[STATE]["total"][DATE]=len(fires_gdf)
+d[STATE]["total"]["dates"][DATE]=len(fires_gdf)
 json_object = json.dumps(d)
 
 
