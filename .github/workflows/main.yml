@@ -21,7 +21,7 @@ jobs:
       - name: Setup conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          environment-file: environment.yml
+          environment-file: spec-file.txt
           activate-environment: env
           auto-activate-base: false
       - name: Cache Conda env
